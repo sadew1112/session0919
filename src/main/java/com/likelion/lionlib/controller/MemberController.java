@@ -19,7 +19,7 @@ public class MemberController {
     private final MemberService memberService;
 
     // 회원 정보 조회
-    @GetMapping("/members/")
+    @GetMapping("/members")
     public ResponseEntity<MemberResponse> getMember(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         log.info("Request GET member with ID: {}", customUserDetails.getId());
         MemberResponse memberResponse = memberService.findMember(customUserDetails);

@@ -2,6 +2,7 @@ package com.likelion.lionlib.service;
 
 import com.likelion.lionlib.domain.*;
 
+import com.likelion.lionlib.dto.CustomUserDetails;
 import com.likelion.lionlib.dto.request.ReservationRequest;
 import com.likelion.lionlib.dto.response.ReservationResponse;
 import com.likelion.lionlib.dto.response.ReserveCountResponse;
@@ -27,8 +28,8 @@ public class ReservationService {
     }
 
     @Transactional
-    public ReservationResponse addReserve(ReservationRequest reservationRequest){
-        Member member = globalService.findMemberById(reservationRequest.getMemberId());
+    public ReservationResponse addReserve(CustomUserDetails customUserDetails, ReservationRequest reservationRequest){
+        Member member = globalService.findMemberById(customUserDetails.getId());
         Book book = globalService.findBookById(reservationRequest.getBookId());
 
         reservationRepository.findByMemberAndBook(member, book).ifPresent(
@@ -58,8 +59,8 @@ public class ReservationService {
         reservationRepository.deleteById(reservationId);
     }
 
-    public List<ReservationResponse> getMemberReserve(Long memberId){
-        Member member = globalService.findMemberById(memberId);
+    public List<ReservationResponse> getMemberReserve(CustomUserDetails customUserDetails){
+        Member member = globalService.findMemberById(customUserDetails.getId());
         List<Reservation> reserveList = reservationRepository.findByMember(member);
 
         return reserveList.stream().map(ReservationResponse::fromEntity).toList();
