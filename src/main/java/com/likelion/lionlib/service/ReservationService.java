@@ -5,6 +5,9 @@ import com.likelion.lionlib.domain.*;
 import com.likelion.lionlib.dto.request.ReservationRequest;
 import com.likelion.lionlib.dto.response.ReservationResponse;
 import com.likelion.lionlib.dto.response.ReserveCountResponse;
+import com.likelion.lionlib.exception.DuplicateMemberException;
+import com.likelion.lionlib.exception.DuplicateReservationException;
+import com.likelion.lionlib.exception.ReservationNotFoundException;
 import com.likelion.lionlib.repository.ReservationRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -29,7 +32,7 @@ public class ReservationService {
         Book book = globalService.findBookById(reservationRequest.getBookId());
 
         reservationRepository.findByMemberAndBook(member, book).ifPresent(
-                reservation -> {throw new RuntimeException("이미 해당 도서를 예약한 상태입니다.");}
+                reservation -> {throw new DuplicateReservationException();}
         );
 
         Reservation savedReservation = Reservation.builder()
@@ -42,7 +45,7 @@ public class ReservationService {
 
     public ReservationResponse getReserve(Long reservationId){
         Reservation reservation = reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new RuntimeException("해당 예약을 찾지 못했습니다."));
+                .orElseThrow(() -> new ReservationNotFoundException(reservationId));
 
         return ReservationResponse.fromEntity(reservation);
     }
@@ -50,7 +53,7 @@ public class ReservationService {
     @Transactional
     public void deleteReserve(Long reservationId){
         reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new RuntimeException("해당 예약을 찾지 못했습니다."));
+                .orElseThrow(() -> new ReservationNotFoundException(reservationId));
 
         reservationRepository.deleteById(reservationId);
     }

@@ -1,5 +1,6 @@
 package com.likelion.lionlib.controller;
 
+import com.likelion.lionlib.dto.CustomUserDetails;
 import com.likelion.lionlib.dto.request.BookRequest;
 import com.likelion.lionlib.dto.response.BookResponse;
 import com.likelion.lionlib.dto.request.LoanRequest;
@@ -9,6 +10,7 @@ import com.likelion.lionlib.service.LoanService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -94,10 +96,10 @@ public class LibraryController {
     }
 
     // 사용자의 대출 목록 조회
-    @GetMapping("/members/{memberId}/loans")
-    public ResponseEntity<List<LoanResponse>> getLoansByMemberId(@PathVariable Long memberId) {
-        log.info("Request GET loans for member with ID: {}", memberId);
-        List<LoanResponse> loans = loanService.getLoansByMemberId(memberId);
+    @GetMapping("/members/loans")
+    public ResponseEntity<List<LoanResponse>> getLoansByMemberId(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        log.info("Request GET loans for member with ID: {}", customUserDetails.getId());
+        List<LoanResponse> loans = loanService.getLoansByMemberId(customUserDetails);
         log.info("Response GET loans for member: {}", loans);
         return ResponseEntity.ok(loans);
     }
