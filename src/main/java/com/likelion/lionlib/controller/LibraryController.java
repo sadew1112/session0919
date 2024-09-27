@@ -70,9 +70,11 @@ public class LibraryController {
 
     // 도서 대출 등록
     @PostMapping("/loans")
-    public ResponseEntity<LoanResponse> addLoan(@RequestBody LoanRequest loanRequest) {
+    public ResponseEntity<LoanResponse> addLoan(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestBody LoanRequest loanRequest) {
         log.info("Request POST a loan: {}", loanRequest);
-        LoanResponse savedLoan = loanService.addLoan(loanRequest);
+        LoanResponse savedLoan = loanService.addLoan(customUserDetails,loanRequest);
         log.info("Response POST a loan: {}", savedLoan);
         return ResponseEntity.ok(savedLoan);
     }

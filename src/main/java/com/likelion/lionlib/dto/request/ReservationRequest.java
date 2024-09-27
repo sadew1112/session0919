@@ -14,6 +14,5 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class ReservationRequest {
-    private Long memberId;
     private Long bookId;
 }

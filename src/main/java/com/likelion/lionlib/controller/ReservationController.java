@@ -24,10 +24,12 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<ReservationResponse> addReserve(@RequestBody ReservationRequest reservationRequest){
+    public ResponseEntity<ReservationResponse> addReserve(
+            @RequestBody ReservationRequest reservationRequest,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails){
         log.info("Request POST a Reservation: {}", reservationRequest);
 
-        ReservationResponse savedReserve = reservationService.addReserve(reservationRequest);
+        ReservationResponse savedReserve = reservationService.addReserve(customUserDetails, reservationRequest);
         return ResponseEntity.ok(savedReserve);
     }
 
@@ -56,7 +58,7 @@ public class ReservationController {
             ){
         log.info("Request GET a reservations for memberID: {}", customUserDetails.getId());
 
-        List<ReservationResponse> reservation = reservationService.getMemberReserve(customUserDetails.getId());
+        List<ReservationResponse> reservation = reservationService.getMemberReserve(customUserDetails);
 
         if (reservation.isEmpty()) {
             log.info("No reservations found for memberId: {}", customUserDetails.getId());
